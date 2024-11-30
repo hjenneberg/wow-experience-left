@@ -1,0 +1,11 @@
+## Interface: 11505
+## Title: ExperienceLeft
+## Notes: An addon that does little to nothing
+## Author: HJenneberg
+## Version: 0.1.0
+## RequiredDeps:
+## X-Curse-Project-ID: 
+## SavedVariables:
+## SavedVariablesPerCharacter:
+
+ExperienceLeft.lua
