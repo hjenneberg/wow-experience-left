@@ -6,6 +6,6 @@
 ## RequiredDeps:
 ## X-Curse-Project-ID: 
 ## SavedVariables:
-## SavedVariablesPerCharacter:
+## SavedVariablesPerCharacter: ExperienceLeftDB
 
 ExperienceLeft.lua
