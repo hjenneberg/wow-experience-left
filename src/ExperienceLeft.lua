@@ -1,3 +1,5 @@
+local isMaxLevel = false
+
 local mainFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 mainFrame:SetSize(300, 250)
 
@@ -25,6 +27,7 @@ end)
 
 SLASH_EXPERIENCELEFT1 = "/xpleft"
 SlashCmdList["EXPERIENCELEFT"] = function()
+    if isMaxLevel then return end
     if mainFrame:IsShown() then
         mainFrame:Hide()
     else
@@ -55,6 +58,8 @@ local currentXpMax = 0
 local timeSinceLastUpdate = 0
 
 mainFrame:SetScript("OnUpdate", function(self, elapsed)
+    if isMaxLevel then return end
+
     timeSinceLastUpdate = timeSinceLastUpdate + elapsed
 
     if (timeSinceLastUpdate > 1) then
@@ -116,6 +121,15 @@ local function eventHandler(self, event, args, ...)
         currentLevel = UnitLevel("player")
         currentXp = UnitXP("player")
         currentXpMax = UnitXPMax("player")
+
+        local maxLevel = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
+        if maxLevel ~= nil and maxLevel == currentLevel then
+            isMaxLevel = true
+        end
+
+        if isMaxLevel then 
+            mainFrame:Hide()
+        end
     end
     if event == "ADDON_LOADED" and args == "ExperienceLeft" then
         if not ExperienceLeftDB then ExperienceLeftDB = {} end
