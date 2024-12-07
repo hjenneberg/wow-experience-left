@@ -1,11 +1,11 @@
 ## Interface: 11505
 ## Title: ExperienceLeft
-## Notes: An addon that does little to nothing
+## Notes: Shows an estimate of how much time is needed to reach the next level
 ## Author: HJenneberg
-## Version: 0.1.0
+## Version: 0.2.0
 ## RequiredDeps:
 ## X-Curse-Project-ID: 
 ## SavedVariables:
 ## SavedVariablesPerCharacter: ExperienceLeftDB
 
-ExperienceLeft.lua
+src/ExperienceLeft.lua
