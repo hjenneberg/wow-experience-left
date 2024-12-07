@@ -49,5 +49,5 @@ MIT
 <!-- Links -->
 
 [github-release-shield]: https://img.shields.io/badge/version-0.2.0-blue?color=369eff&labelColor=black&logo=github
-[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.11.7
+[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.2.0
 [image-screenshot]: ./docs/images/screenshot.png
