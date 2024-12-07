@@ -27,7 +27,7 @@ The addon offers a lot of the features you know from other addons of this type:
 
 ## 📦 Download & Installation
 
-This addon is available on [CurseForge][curseforge-release-link]. You can use the CurseForge app to download and stay up to date with this addon.
+~~This addon is available on [CurseForge][curseforge-release-link]. You can use the CurseForge app to download and stay up to date with this addon.~~
 
 If you don't want to use CurseForge you can just [download the current version][github-release-link] from Github and drop the contents of the folder into your WoW addons folder.
 
