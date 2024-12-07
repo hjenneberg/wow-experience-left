@@ -25,15 +25,25 @@ mainFrame:SetScript("OnHide", function()
     PlaySound(808)
 end)
 
+local previousSessionXp = 0
+local previousSessionTime = 0
+
 SLASH_EXPERIENCELEFT1 = "/xpleft"
-SlashCmdList["EXPERIENCELEFT"] = function()
+local function slashCommandHandler(msg, editBox)
     if isMaxLevel then return end
-    if mainFrame:IsShown() then
-        mainFrame:Hide()
-    else
+    if msg == 'show' then
         mainFrame:Show()
+    elseif msg == 'hide' then
+        mainFrame:Hide()
+    elseif msg == 'center' then
+        mainFrame:ClearAllPoints();
+        mainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    elseif msg == 'reset' then
+        previousSessionXp = 0
+        previousSessionTime = 0
     end
 end
+SlashCmdList["EXPERIENCELEFT"] = slashCommandHandler
 
 mainFrame.lableCurrentXp = mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 mainFrame.lableCurrentXp:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 5, -5)
@@ -47,9 +57,6 @@ mainFrame.lableTimeLeftToLevel:SetPoint("TOPLEFT", mainFrame, "TOPLEFT", 5, -50)
 local sessionStartTime = time()
 local sessionTime = 0
 local sessionXp = 0
-
-local previousSessionXp = 0
-local previousSessionTime = 0
 
 local currentLevel = 0
 local currentXp = 0
