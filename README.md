@@ -33,13 +33,21 @@ If you don't want to use CurseForge you can just [download the current version][
 
 ## 🔨 Usage
 
-Use [Shift] + Left click to move the frame to the desired position. Use- `/xpleft` slash command to toggle visibility.
+### Slash commands
+
+- Use `/xpleft show` to show the xp frame
+- Use `/xpleft hide` to hide the xp frame
+- Use `/xpleft center` to move the xp frame back to its initial position
+- Use `/xpleft reset` to reset saved xp rates from previous sessions
+
+### How to move the frame
+
+- Use [Shift] + Left click to move the frame to the desired position
 
 ## 🏭 Todo
 
--   Add slash command to reset saved experience rate
--   Add slash command to reset frame position
 -   Tooltip to show movement options
+-   Show help for slash commands
 -   Improve number format
 
 ## License
