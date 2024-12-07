@@ -1,0 +1,10 @@
+package-as: ExperienceLeft
+
+manual-changelog:
+    filename: CHANGELOG.md
+    markup-type: markdown
+
+license-output: LICENSE
+
+ignore:
+    - .prettierrc
