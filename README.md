@@ -8,7 +8,7 @@ A World of Warcraft addon that shows an estimate of how much time is needed to r
 
 · [Changelog](./CHANGELOG.md) ·
 
-[![Version 0.2.0][github-release-shield]][github-release-link]
+[![Version 0.2.1][github-release-shield]][github-release-link]
 
 </div>
 
@@ -37,7 +37,6 @@ Use [Shift] + Left click to move the frame to the desired position. Use- `/xplef
 
 ## 🏭 Todo
 
--   Hide on max level
 -   Add slash command to reset saved experience rate
 -   Add slash command to reset frame position
 -   Tooltip to show movement options
@@ -50,6 +49,6 @@ MIT
 <!-- Links -->
 
 [curseforge-release-link]: https://www.curseforge.com/wow/addons/experience-left
-[github-release-shield]: https://img.shields.io/badge/version-0.2.0-blue?color=369eff&labelColor=black&logo=github
-[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.2.0
+[github-release-shield]: https://img.shields.io/badge/version-0.2.1-blue?color=369eff&labelColor=black&logo=github
+[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.2.1
 [image-screenshot]: ./docs/images/screenshot.png
