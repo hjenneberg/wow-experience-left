@@ -49,7 +49,6 @@ If you don't want to use CurseForge you can just [download the current version][
 ## 🏭 Todo
 
 -   Tooltip to show movement options
--   Show help for slash commands
 -   Improve number format
 
 ## License
