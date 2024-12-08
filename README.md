@@ -21,13 +21,15 @@ After a fresh start on a fresh Classic Hardcore server I decided to get into add
 The addon offers a lot of the features you know from other addons of this type:
 
 -   Displays current XP in relation to current maximum XP and XP left to reach next level
--   Calculates XP per hour rates and time left to reach next level
+-   Calculates XP per hour rates and estimates time left to reach next level
 -   Experience rate is saved and used for calculation in subsequent sessions
 -   Level progress is displayed color coded on a scale from red to green
 
+The addon frame will be hidden upon reaching max level, but the addon will still be active. Consider disabling it on characters that have reached max level.
+
 ## 📦 Download & Installation
 
-~~This addon is available on [CurseForge][curseforge-release-link]. You can use the CurseForge app to download and stay up to date with this addon.~~
+This addon is available on [CurseForge][curseforge-release-link]. You can use the CurseForge app to download and stay up to date with this addon.
 
 If you don't want to use CurseForge you can just [download the current version][github-release-link] from Github and drop the contents of the folder into your WoW addons folder.
 
