@@ -93,9 +93,9 @@ MainFrame:SetScript("OnUpdate", function(self, elapsed)
             textColor = string.format("%02x", (1 - xpAsRatio) * 2 * 255) .. "FF00"
         end
 
-        self.lableCurrentXp:SetText("|cFF" .. textColor .. "Current XP: " .. currentXp .. "/" .. currentXpMax .. " (" .. math.floor(100 * xpAsRatio) .. "%)" .. "|r")
+        self.lableCurrentXp:SetText("|cFF" .. textColor .. "Current XP: " .. currentXp .. "/" .. currentXpMax .. " (" .. round(100 * xpAsRatio) .. "%)" .. "|r")
         self.lableXpLeftToLevel:SetText("|cFF" .. textColor .. "XP left to next level: " .. xpLeftToLevel .. "|r")
-        self.lableXpPerSecond:SetText("|cFF" .. textColor .. "XP/h: " .. math.floor(3600 * xpPerSecond) .. "|r")
+        self.lableXpPerSecond:SetText("|cFF" .. textColor .. "XP/h: " .. round(3600 * xpPerSecond) .. "|r")
         self.lableTimeLeftToLevel:SetText("|cFF" .. textColor .. "Time left: " .. self:getTimeLeftToLevelAsString(xpPerSecond, xpLeftToLevel) .. "|r")
 
         if ExperienceLeftDB then
