@@ -7,4 +7,12 @@ manual-changelog:
 license-output: LICENSE
 
 ignore:
+    - .changeset
+    - .ddev
+    - .githooks
+    - .github
+    - .gitignore
+    - .luaformat
     - .prettierrc
+    - package-lock.json
+    - package.json
