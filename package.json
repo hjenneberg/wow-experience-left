@@ -1,0 +1,20 @@
+{
+    "name": "wow-experience-left",
+    "version": "0.2.2",
+    "description": "A World of Warcraft addon to keep track of experience left to next level",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hjenneberg/wow-experience-left.git"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/hjenneberg/wow-experience-left/issues"
+    },
+    "dependencies": {
+        "@changesets/cli": "^2.27.10"
+    }
+}
