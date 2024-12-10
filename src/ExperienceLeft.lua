@@ -6,11 +6,9 @@ MainFrame:SetSize(300, 250)
 MainFrame:EnableMouse(true)
 MainFrame:SetMovable(true)
 MainFrame:RegisterForDrag("LeftButton")
-MainFrame:SetScript("OnDragStart", function(self)
-    if IsShiftKeyDown() then self:StartMoving() end
-end)
+MainFrame:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
 MainFrame:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
+    self:StopMovingOrSizing()
     if ExperienceLeftDB then
         local _, _, relativePoint, xOffset, yOffset = MainFrame:GetPoint(1)
         ExperienceLeftDB.relativePoint = relativePoint
@@ -18,12 +16,8 @@ MainFrame:SetScript("OnDragStop", function(self)
         ExperienceLeftDB.yOffset = yOffset
     end
 end)
-MainFrame:SetScript("OnShow", function()
-    PlaySound(808)
-end)
-MainFrame:SetScript("OnHide", function()
-    PlaySound(808)
-end)
+MainFrame:SetScript("OnShow", function() PlaySound(808) end)
+MainFrame:SetScript("OnHide", function() PlaySound(808) end)
 
 local previousSessionXp = 0
 local previousSessionTime = 0
@@ -93,10 +87,12 @@ MainFrame:SetScript("OnUpdate", function(self, elapsed)
             textColor = string.format("%02x", (1 - xpAsRatio) * 2 * 255) .. "FF00"
         end
 
-        self.lableCurrentXp:SetText("|cFF" .. textColor .. "Current XP: " .. currentXp .. "/" .. currentXpMax .. " (" .. round(100 * xpAsRatio) .. "%)" .. "|r")
+        self.lableCurrentXp:SetText("|cFF" .. textColor .. "Current XP: " .. currentXp .. "/" .. currentXpMax .. " (" ..
+                                        round(100 * xpAsRatio) .. "%)" .. "|r")
         self.lableXpLeftToLevel:SetText("|cFF" .. textColor .. "XP left to next level: " .. xpLeftToLevel .. "|r")
         self.lableXpPerSecond:SetText("|cFF" .. textColor .. "XP/h: " .. round(3600 * xpPerSecond) .. "|r")
-        self.lableTimeLeftToLevel:SetText("|cFF" .. textColor .. "Time left: " .. self:getTimeLeftToLevelAsString(xpPerSecond, xpLeftToLevel) .. "|r")
+        self.lableTimeLeftToLevel:SetText("|cFF" .. textColor .. "Time left: " ..
+                                              self:getTimeLeftToLevelAsString(xpPerSecond, xpLeftToLevel) .. "|r")
 
         if ExperienceLeftDB then
             ExperienceLeftDB.sessionXp = sessionXp + previousSessionXp
@@ -117,14 +113,11 @@ local function eventHandler(self, event, args, ...)
         currentXp = UnitXP("player")
         currentXpMax = UnitXPMax("player")
 
+        ---@diagnostic disable-next-line: undefined-global
         local maxLevel = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
-        if maxLevel ~= nil and maxLevel == currentLevel then
-            isMaxLevel = true
-        end
+        if maxLevel ~= nil and maxLevel == currentLevel then isMaxLevel = true end
 
-        if isMaxLevel then 
-            MainFrame:Hide()
-        end
+        if isMaxLevel then MainFrame:Hide() end
     end
     if event == "ADDON_LOADED" and args == "ExperienceLeft" then
         if not ExperienceLeftDB then ExperienceLeftDB = {} end
@@ -143,8 +136,7 @@ local function eventHandler(self, event, args, ...)
         MainFrame:SetPoint("CENTER", UIParent, relativePoint, xOffset, yOffset)
     end
     if event == "PLAYER_XP_UPDATE" then
-        if (UnitLevel("player") == currentLevel)
-        then
+        if (UnitLevel("player") == currentLevel) then
             sessionXp = sessionXp + (UnitXP("player") - currentXp)
         else
             sessionXp = sessionXp + (currentXpMax - currentXp) + UnitXP("player")
