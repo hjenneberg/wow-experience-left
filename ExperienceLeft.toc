@@ -9,6 +9,6 @@
 ## SavedVariablesPerCharacter: ExperienceLeftDB
 
 src/functions/round.lua
+src/functions/timeToLevelText.lua
 
 src/ExperienceLeft.lua
-src/functions/getTimeLeftToLevelAsString.lua
