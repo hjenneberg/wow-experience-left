@@ -1,36 +1,21 @@
+ColorPrimary = "|cFFFFFF00"
+ColorEnd = "|r"
+
 local isMaxLevel = false
 
-local cEnd = "|r"
+PreviousSessionXp = 0
+PreviousSessionTime = 0
 
-MainFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-MainFrame:SetSize(300, 250)
-
-MainFrame:EnableMouse(true)
-MainFrame:SetMovable(true)
-MainFrame:RegisterForDrag("LeftButton")
-MainFrame:SetScript("OnDragStart", function(self)
-	if IsShiftKeyDown() then
-		self:StartMoving()
-	end
-end)
-MainFrame:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	if ExperienceLeftDB then
-		local _, _, relativePoint, xOffset, yOffset = MainFrame:GetPoint(1)
-		ExperienceLeftDB.relativePoint = relativePoint
-		ExperienceLeftDB.xOffset = xOffset
-		ExperienceLeftDB.yOffset = yOffset
-	end
-end)
-MainFrame:SetScript("OnShow", function()
-	PlaySound(808)
-end)
-MainFrame:SetScript("OnHide", function()
-	PlaySound(808)
-end)
-
-local previousSessionXp = 0
-local previousSessionTime = 0
+XpLeftFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+XpLeftFrame:SetSize(300, 250)
+XpLeftFrame:EnableMouse(true)
+XpLeftFrame:SetMovable(true)
+XpLeftFrame:RegisterForDrag("LeftButton")
+XpLeftFrame:SetScript("OnDragStart", OnDragStart)
+XpLeftFrame:SetScript("OnDragStop", OnDragStop)
+XpLeftFrame:SetScript("OnShow", OnShow)
+XpLeftFrame:SetScript("OnHide", OnHide)
+XpLeftFrame:SetScript("OnMouseDown", OnMouseDown)
 
 SLASH_EXPERIENCELEFT1 = "/xpleft"
 local function slashCommandHandler(msg, editBox)
@@ -38,19 +23,14 @@ local function slashCommandHandler(msg, editBox)
 		return
 	end
 	if msg == "show" then
-		MainFrame:Show()
+		XpLeftFrame:Show()
 	elseif msg == "hide" then
-		MainFrame:Hide()
+		HideFrame()
 	elseif msg == "center" then
-		MainFrame:ClearAllPoints()
-		MainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		XpLeftFrame:ClearAllPoints()
+		XpLeftFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	elseif msg == "reset" then
-		previousSessionXp = 0
-		previousSessionTime = 0
-		if ExperienceLeftDB then
-			ExperienceLeftDB.sessionXp = 0
-			ExperienceLeftDB.sessionTime = 0
-		end
+		ResetSessionXP()
 	else
 		print("|cFFFFFF00ExperienceLeft commands:|r")
 		print("|cFFFF9900/xpleft|r |cFFBBBBBB- Show this help|r")
@@ -62,14 +42,14 @@ local function slashCommandHandler(msg, editBox)
 end
 SlashCmdList["EXPERIENCELEFT"] = slashCommandHandler
 
-MainFrame.lableCurrentXp = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.lableCurrentXp:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 5, -5)
-MainFrame.lableXpLeftToLevel = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.lableXpLeftToLevel:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 5, -20)
-MainFrame.lableXpPerSecond = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.lableXpPerSecond:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 5, -35)
-MainFrame.lableTimeLeftToLevel = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.lableTimeLeftToLevel:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 5, -50)
+XpLeftFrame.lableCurrentXp = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+XpLeftFrame.lableCurrentXp:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -5)
+XpLeftFrame.lableXpLeftToLevel = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+XpLeftFrame.lableXpLeftToLevel:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -20)
+XpLeftFrame.lableXpPerSecond = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+XpLeftFrame.lableXpPerSecond:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -35)
+XpLeftFrame.lableTimeLeftToLevel = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+XpLeftFrame.lableTimeLeftToLevel:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -50)
 
 local sessionStartTime = time()
 local sessionTime = 0
@@ -92,7 +72,7 @@ function formatNumber(number)
 	end
 end
 
-MainFrame:SetScript("OnUpdate", function(self, elapsed)
+XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 	if isMaxLevel then
 		return
 	end
@@ -101,7 +81,7 @@ MainFrame:SetScript("OnUpdate", function(self, elapsed)
 
 	if timeSinceLastUpdate > 1 then
 		sessionTime = time() - sessionStartTime
-		local xpPerSecond = (sessionXp + previousSessionXp) / (sessionTime + previousSessionTime)
+		local xpPerSecond = (sessionXp + PreviousSessionXp) / (sessionTime + PreviousSessionTime)
 		local xpLeftToLevel = currentXpMax - currentXp
 		local xpAsRatio = currentXp / currentXpMax
 
@@ -121,26 +101,28 @@ MainFrame:SetScript("OnUpdate", function(self, elapsed)
 				.. " ("
 				.. round(100 * xpAsRatio)
 				.. "%)"
-				.. cEnd
+				.. ColorEnd
 		)
-		self.lableXpLeftToLevel:SetText(textColor .. "XP left to next level: " .. formatNumber(xpLeftToLevel) .. cEnd)
-		self.lableXpPerSecond:SetText(textColor .. "XP/h: " .. formatNumber(3600 * xpPerSecond) .. cEnd)
+		self.lableXpLeftToLevel:SetText(
+			textColor .. "XP left to next level: " .. formatNumber(xpLeftToLevel) .. ColorEnd
+		)
+		self.lableXpPerSecond:SetText(textColor .. "XP/h: " .. formatNumber(3600 * xpPerSecond) .. ColorEnd)
 		self.lableTimeLeftToLevel:SetText(
-			textColor .. "Time left: " .. timeToLevelText(xpPerSecond, xpLeftToLevel) .. cEnd
+			textColor .. "Time left: " .. TimeToLevelText(xpPerSecond, xpLeftToLevel) .. ColorEnd
 		)
 
 		if ExperienceLeftDB then
-			ExperienceLeftDB.sessionXp = sessionXp + previousSessionXp
-			ExperienceLeftDB.sessionTime = sessionTime + previousSessionTime
+			ExperienceLeftDB.sessionXp = sessionXp + PreviousSessionXp
+			ExperienceLeftDB.sessionTime = sessionTime + PreviousSessionTime
 		end
 
 		timeSinceLastUpdate = 0
 	end
 end)
 
-MainFrame:RegisterEvent("ADDON_LOADED")
-MainFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-MainFrame:RegisterEvent("PLAYER_XP_UPDATE")
+XpLeftFrame:RegisterEvent("ADDON_LOADED")
+XpLeftFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+XpLeftFrame:RegisterEvent("PLAYER_XP_UPDATE")
 
 local function eventHandler(self, event, args, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -155,7 +137,7 @@ local function eventHandler(self, event, args, ...)
 		end
 
 		if isMaxLevel then
-			MainFrame:Hide()
+			XpLeftFrame:Hide()
 		end
 	end
 	if event == "ADDON_LOADED" and args == "ExperienceLeft" then
@@ -163,13 +145,13 @@ local function eventHandler(self, event, args, ...)
 			ExperienceLeftDB = {}
 		end
 
-		previousSessionXp = 0
+		PreviousSessionXp = 0
 		if ExperienceLeftDB.sessionXp then
-			previousSessionXp = ExperienceLeftDB.sessionXp
+			PreviousSessionXp = ExperienceLeftDB.sessionXp
 		end
-		previousSessionTime = 0
+		PreviousSessionTime = 0
 		if ExperienceLeftDB.sessionTime then
-			previousSessionTime = ExperienceLeftDB.sessionXp
+			PreviousSessionTime = ExperienceLeftDB.sessionXp
 		end
 
 		local relativePoint = "CENTER"
@@ -184,7 +166,7 @@ local function eventHandler(self, event, args, ...)
 		if ExperienceLeftDB.yOffset then
 			yOffset = ExperienceLeftDB.yOffset
 		end
-		MainFrame:SetPoint("CENTER", UIParent, relativePoint, xOffset, yOffset)
+		XpLeftFrame:SetPoint("CENTER", UIParent, relativePoint, xOffset, yOffset)
 	end
 	if event == "PLAYER_XP_UPDATE" then
 		if UnitLevel("player") == currentLevel then
@@ -198,4 +180,4 @@ local function eventHandler(self, event, args, ...)
 	end
 end
 
-MainFrame:SetScript("OnEvent", eventHandler)
+XpLeftFrame:SetScript("OnEvent", eventHandler)

@@ -1,5 +1,4 @@
----@diagnostic disable-next-line: lowercase-global
-function timeToLevelText(xpPerSecond, xpLeftToLevel)
+function TimeToLevelText(xpPerSecond, xpLeftToLevel)
 	if xpPerSecond == 0 then
 		return "n/a"
 	end
