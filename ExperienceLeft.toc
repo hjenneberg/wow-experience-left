@@ -9,6 +9,16 @@
 ## SavedVariablesPerCharacter: ExperienceLeftDB
 
 src/functions/round.lua
+
+src/functions/on_drag_start.lua
+src/functions/on_drag_stop.lua
+src/functions/on_hide.lua
+src/functions/on_show.lua
+src/functions/on_mouse_down.lua
+
+src/functions/reset_session_xp.lua
+src/functions/hide_frame.lua
+
 src/functions/timeToLevelText.lua
 
 src/ExperienceLeft.lua
