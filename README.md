@@ -35,21 +35,20 @@ If you don't want to use CurseForge you can just [download the current version][
 
 ## 🔨 Usage
 
-### Slash commands
+### Context menu
 
-- Use `/xpleft show` to show the xp frame
-- Use `/xpleft hide` to hide the xp frame
-- Use `/xpleft center` to move the xp frame back to its initial position
-- Use `/xpleft reset` to reset saved xp rates from previous sessions
+Most of the addon options are available via context menu. Just right click the addon frame to show it.
 
 ### How to move the frame
 
-- Use [Shift] + Left click to move the frame to the desired position
+-   Use [Shift] + Left click to move the frame to the desired position
 
-## 🏭 Todo
+### Slash commands
 
--   Tooltip to show movement options
--   Improve number format
+-   Use `/xpleft hide` to hide the frame
+-   Use `/xpleft show` to show the frame after you have hidden it
+-   Use `/xpleft center` to move the frame back to its initial position if you have accidentally dragged it out of the screen
+-   Use `/xpleft reset` to restart your XP session. All your previous XP rates will be deleted.
 
 ## License
 
