@@ -68,7 +68,7 @@ function formatNumber(number)
 	if number > 1000 then
 		return round(number / 1000, 1) .. "k"
 	else
-		return number
+		return round(number)
 	end
 end
 
