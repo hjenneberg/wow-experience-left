@@ -1,6 +1,6 @@
 {
     "name": "wow-experience-left",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "description": "A World of Warcraft addon to keep track of experience left to next level",
     "directories": {
         "doc": "docs"
