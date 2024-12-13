@@ -80,7 +80,7 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 
 	if timeSinceLastUpdate > 1 then
 		SessionTime = time() - SessionStartTime
-		local xpPerSecond = (SessionXp + PreviousSessionXp) / (SessionTime + PreviousSessionTime)
+		local xpPerSecond = (SessionXp + PreviousSessionXp) / math.max((SessionTime + PreviousSessionTime), 1)
 		local xpLeftToLevel = currentXpMax - currentXp
 		local xpAsRatio = currentXp / currentXpMax
 
