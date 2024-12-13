@@ -5,6 +5,9 @@ local isMaxLevel = false
 
 PreviousSessionXp = 0
 PreviousSessionTime = 0
+SessionStartTime = time()
+SessionTime = 0
+SessionXp = 0
 
 XpLeftFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 XpLeftFrame:SetSize(300, 250)
@@ -51,10 +54,6 @@ XpLeftFrame.lableXpPerSecond:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -35)
 XpLeftFrame.lableTimeLeftToLevel = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 XpLeftFrame.lableTimeLeftToLevel:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -50)
 
-local sessionStartTime = time()
-local sessionTime = 0
-local sessionXp = 0
-
 local currentLevel = 0
 local currentXp = 0
 local currentXpMax = 0
@@ -80,8 +79,8 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 	timeSinceLastUpdate = timeSinceLastUpdate + elapsed
 
 	if timeSinceLastUpdate > 1 then
-		sessionTime = time() - sessionStartTime
-		local xpPerSecond = (sessionXp + PreviousSessionXp) / (sessionTime + PreviousSessionTime)
+		SessionTime = time() - SessionStartTime
+		local xpPerSecond = (SessionXp + PreviousSessionXp) / (SessionTime + PreviousSessionTime)
 		local xpLeftToLevel = currentXpMax - currentXp
 		local xpAsRatio = currentXp / currentXpMax
 
@@ -112,8 +111,8 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 		)
 
 		if ExperienceLeftDB then
-			ExperienceLeftDB.sessionXp = sessionXp + PreviousSessionXp
-			ExperienceLeftDB.sessionTime = sessionTime + PreviousSessionTime
+			ExperienceLeftDB.sessionXp = SessionXp + PreviousSessionXp
+			ExperienceLeftDB.sessionTime = SessionTime + PreviousSessionTime
 		end
 
 		timeSinceLastUpdate = 0
@@ -170,9 +169,9 @@ local function eventHandler(self, event, args, ...)
 	end
 	if event == "PLAYER_XP_UPDATE" then
 		if UnitLevel("player") == currentLevel then
-			sessionXp = sessionXp + (UnitXP("player") - currentXp)
+			SessionXp = SessionXp + (UnitXP("player") - currentXp)
 		else
-			sessionXp = sessionXp + (currentXpMax - currentXp) + UnitXP("player")
+			SessionXp = SessionXp + (currentXpMax - currentXp) + UnitXP("player")
 			currentLevel = UnitLevel("player")
 			currentXpMax = UnitXPMax("player")
 		end

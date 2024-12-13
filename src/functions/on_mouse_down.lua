@@ -4,7 +4,7 @@ function OnMouseDown(self, button)
 	end
 	MenuUtil.CreateContextMenu(UIParent, function(ownerRegion, rootDescription)
 		rootDescription:CreateTitle("ExperienceLeft")
-		rootDescription:CreateButton("Reset session XP", ResetSessionXP)
+		rootDescription:CreateButton("Start new session", ResetSessionXP)
 		rootDescription:CreateButton("Hide frame", HideFrame)
 	end)
 end
