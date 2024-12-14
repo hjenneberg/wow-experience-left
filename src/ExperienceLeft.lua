@@ -1,7 +1,10 @@
 ColorPrimary = "|cFFFFFF00"
 ColorEnd = "|r"
 
-local isMaxLevel = false
+IsMaxLevel = false
+IsPaused = false
+
+ShouldUpdateOnNextTick = false
 
 PreviousSessionXp = 0
 PreviousSessionTime = 0
@@ -10,7 +13,7 @@ SessionTime = 0
 SessionXp = 0
 
 XpLeftFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-XpLeftFrame:SetSize(300, 250)
+XpLeftFrame:SetSize(200, 150)
 XpLeftFrame:EnableMouse(true)
 XpLeftFrame:SetMovable(true)
 XpLeftFrame:RegisterForDrag("LeftButton")
@@ -20,102 +23,89 @@ XpLeftFrame:SetScript("OnShow", OnShow)
 XpLeftFrame:SetScript("OnHide", OnHide)
 XpLeftFrame:SetScript("OnMouseDown", OnMouseDown)
 
-SLASH_EXPERIENCELEFT1 = "/xpleft"
-local function slashCommandHandler(msg, editBox)
-	if isMaxLevel then
-		return
-	end
-	if msg == "show" then
-		XpLeftFrame:Show()
-	elseif msg == "hide" then
-		HideFrame()
-	elseif msg == "center" then
-		XpLeftFrame:ClearAllPoints()
-		XpLeftFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	elseif msg == "reset" then
-		ResetSessionXP()
-	else
-		print("|cFFFFFF00ExperienceLeft commands:|r")
-		print("|cFFFF9900/xpleft|r |cFFBBBBBB- Show this help|r")
-		print("|cFFFF9900/xpleft show|r |cFFBBBBBB- Show the addon main frame|r")
-		print("|cFFFF9900/xpleft hide|r |cFFBBBBBB- Hide the addon main frame|r")
-		print("|cFFFF9900/xpleft center|r |cFFBBBBBB- Center the frame on the screen|r")
-		print("|cFFFF9900/xpleft reset|r |cFFBBBBBB- Reset saved xp rates from previous sessions|r")
-	end
-end
-SlashCmdList["EXPERIENCELEFT"] = slashCommandHandler
+FrameLabel = {
+	{ key = "currentXp", title = "Current XP", value = "0" },
+	{ key = "xpLeft", title = "XP left", value = "0" },
+	{ key = "xpPerTime", title = "XP/h", value = "0" },
+	{ key = "timeLeft", title = "Time left", value = "0" },
+}
 
-XpLeftFrame.lableCurrentXp = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-XpLeftFrame.lableCurrentXp:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -5)
-XpLeftFrame.lableXpLeftToLevel = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-XpLeftFrame.lableXpLeftToLevel:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -20)
-XpLeftFrame.lableXpPerSecond = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-XpLeftFrame.lableXpPerSecond:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -35)
-XpLeftFrame.lableTimeLeftToLevel = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-XpLeftFrame.lableTimeLeftToLevel:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -50)
+local lableCount = 4
+local lineHeight = 16
+local lineNumber = 0
+
+for i = 1, lableCount do
+	local key = FrameLabel[i]["key"]
+
+	XpLeftFrame[key .. "title"] = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	XpLeftFrame[key .. "title"]:SetFont(XpLeftFrame[key .. "title"]:GetFont() or "fonts/frizqt__.ttf", 12, "OUTLINE")
+	XpLeftFrame[key .. "title"]:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -5 - lineHeight * lineNumber)
+
+	XpLeftFrame[key .. "value"] = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	XpLeftFrame[key .. "value"]:SetFont(XpLeftFrame[key .. "title"]:GetFont() or "fonts/frizqt__.ttf", 12, "OUTLINE")
+	XpLeftFrame[key .. "value"]:SetPoint("TOPRIGHT", XpLeftFrame, "TOPRIGHT", 5, -5 - lineHeight * lineNumber)
+
+	lineNumber = lineNumber + 1
+end
 
 local currentLevel = 0
 local currentXp = 0
 local currentXpMax = 0
-
 local timeSinceLastUpdate = 0
 
--- functions
-
----@diagnostic disable-next-line: lowercase-global
-function formatNumber(number)
-	if number > 1000 then
-		return round(number / 1000, 1) .. "k"
-	else
-		return round(number)
-	end
-end
-
 XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
-	if isMaxLevel then
+	if IsMaxLevel then
 		return
 	end
 
 	timeSinceLastUpdate = timeSinceLastUpdate + elapsed
+	if timeSinceLastUpdate < 1 and not ShouldUpdateOnNextTick then
+		return
+	end
 
-	if timeSinceLastUpdate > 1 then
+	ShouldUpdateOnNextTick = false
+
+	--Update calculation
+
+	if IsPaused then
+		SessionTime = 0
+	else
 		SessionTime = time() - SessionStartTime
-		local xpPerSecond = (SessionXp + PreviousSessionXp) / math.max((SessionTime + PreviousSessionTime), 1)
-		local xpLeftToLevel = currentXpMax - currentXp
-		local xpAsRatio = currentXp / currentXpMax
+	end
 
-		local textColor = "|cFF"
+	local xpPerSecond = (SessionXp + PreviousSessionXp) / math.max((SessionTime + PreviousSessionTime), 1)
+	local xpLeftToLevel = currentXpMax - currentXp
+	local xpAsRatio = currentXp / currentXpMax
+	if ExperienceLeftDB then
+		ExperienceLeftDB.sessionXp = SessionXp + PreviousSessionXp
+		ExperienceLeftDB.sessionTime = SessionTime + PreviousSessionTime
+	end
+	timeSinceLastUpdate = 0
+
+	--Update frame
+
+	local colorText
+	if IsPaused then
+		colorText = "|cFF888888"
+	else
 		if xpAsRatio < 0.5 then
-			textColor = textColor .. "FF" .. string.format("%02x", xpAsRatio * 2 * 255) .. "00"
+			colorText = "|cFFFF" .. string.format("%02x", xpAsRatio * 2 * 255) .. "00"
 		else
-			textColor = textColor .. string.format("%02x", (1 - xpAsRatio) * 2 * 255) .. "FF00"
+			colorText = "|cFF" .. string.format("%02x", (1 - xpAsRatio) * 2 * 255) .. "FF00"
 		end
+	end
 
-		self.lableCurrentXp:SetText(
-			textColor
-				.. "Current XP: "
-				.. formatNumber(currentXp)
-				.. "/"
-				.. formatNumber(currentXpMax)
-				.. " ("
-				.. round(100 * xpAsRatio)
-				.. "%)"
-				.. ColorEnd
-		)
-		self.lableXpLeftToLevel:SetText(
-			textColor .. "XP left to next level: " .. formatNumber(xpLeftToLevel) .. ColorEnd
-		)
-		self.lableXpPerSecond:SetText(textColor .. "XP/h: " .. formatNumber(3600 * xpPerSecond) .. ColorEnd)
-		self.lableTimeLeftToLevel:SetText(
-			textColor .. "Time left: " .. TimeToLevelText(xpPerSecond, xpLeftToLevel) .. ColorEnd
-		)
+	FrameLabel[1].value = colorText .. FormatLargeNumber(currentXp) .. " (" .. round(100 * xpAsRatio) .. "%)"
+	FrameLabel[2].value = FormatLargeNumber(xpLeftToLevel) .. "/" .. FormatLargeNumber(currentXpMax)
+	FrameLabel[3].value = FormatLargeNumber(3600 * xpPerSecond)
+	FrameLabel[4].value = TimeToLevelText(xpPerSecond, xpLeftToLevel)
 
-		if ExperienceLeftDB then
-			ExperienceLeftDB.sessionXp = SessionXp + PreviousSessionXp
-			ExperienceLeftDB.sessionTime = SessionTime + PreviousSessionTime
-		end
+	for i = 1, lableCount do
+		local key = FrameLabel[i]["key"]
+		local value = FrameLabel[i]
 
-		timeSinceLastUpdate = 0
+		XpLeftFrame[key .. "title"]:SetText(colorText .. value["title"] .. ":" .. ColorEnd)
+		XpLeftFrame[key .. "value"]:SetText(colorText .. value["value"] .. ColorEnd)
 	end
 end)
 
@@ -132,10 +122,10 @@ local function eventHandler(self, event, args, ...)
 		---@diagnostic disable-next-line: undefined-global
 		local maxLevel = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
 		if maxLevel ~= nil and maxLevel == currentLevel then
-			isMaxLevel = true
+			IsMaxLevel = true
 		end
 
-		if isMaxLevel then
+		if IsMaxLevel then
 			XpLeftFrame:Hide()
 		end
 	end
@@ -169,9 +159,13 @@ local function eventHandler(self, event, args, ...)
 	end
 	if event == "PLAYER_XP_UPDATE" then
 		if UnitLevel("player") == currentLevel then
-			SessionXp = SessionXp + (UnitXP("player") - currentXp)
+			if not IsPaused then
+				SessionXp = SessionXp + (UnitXP("player") - currentXp)
+			end
 		else
-			SessionXp = SessionXp + (currentXpMax - currentXp) + UnitXP("player")
+			if not IsPaused then
+				SessionXp = SessionXp + (currentXpMax - currentXp) + UnitXP("player")
+			end
 			currentLevel = UnitLevel("player")
 			currentXpMax = UnitXPMax("player")
 		end
