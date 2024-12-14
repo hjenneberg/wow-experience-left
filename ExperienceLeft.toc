@@ -9,6 +9,7 @@
 ## SavedVariablesPerCharacter: ExperienceLeftDB
 
 src/functions/round.lua
+src/functions/format_large_number.lua
 
 src/functions/on_drag_start.lua
 src/functions/on_drag_stop.lua
