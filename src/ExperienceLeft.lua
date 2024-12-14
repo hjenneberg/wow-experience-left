@@ -42,7 +42,7 @@ for i = 1, lableCount do
 	XpLeftFrame[key .. "title"]:SetPoint("TOPLEFT", XpLeftFrame, "TOPLEFT", 5, -5 - lineHeight * lineNumber)
 
 	XpLeftFrame[key .. "value"] = XpLeftFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	XpLeftFrame[key .. "value"]:SetFont(XpLeftFrame[key .. "title"]:GetFont() or "fonts/frizqt__.ttf", 12, "OUTLINE")
+	XpLeftFrame[key .. "value"]:SetFont(XpLeftFrame[key .. "value"]:GetFont() or "fonts/frizqt__.ttf", 12, "OUTLINE")
 	XpLeftFrame[key .. "value"]:SetPoint("TOPRIGHT", XpLeftFrame, "TOPRIGHT", 5, -5 - lineHeight * lineNumber)
 
 	lineNumber = lineNumber + 1
