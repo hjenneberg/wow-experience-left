@@ -27,7 +27,9 @@ function CreateMenu(root)
 
 	root:CreateDivider()
 
-	root:CreateButton("Hide frame", HideFrame)
+	local submenuFrame = root:CreateButton("Frame")
+	submenuFrame
+		:CreateButton("Hide frame", HideFrame)
 		:SetTitleAndTextTooltip("", "Hide frame. Use |cFFFF9900/xpleft show|r to show it again.")
 end
 
