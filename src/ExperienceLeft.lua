@@ -13,7 +13,7 @@ SessionTime = 0
 SessionXp = 0
 
 XpLeftFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-XpLeftFrame:SetSize(200, 150)
+XpLeftFrame:SetSize(200, 70)
 XpLeftFrame:EnableMouse(true)
 XpLeftFrame:SetMovable(true)
 XpLeftFrame:RegisterForDrag("LeftButton")
@@ -95,8 +95,14 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 		end
 	end
 
-	FrameLabel[1].value = colorText .. FormatLargeNumber(currentXp) .. " (" .. round(100 * xpAsRatio) .. "%)"
-	FrameLabel[2].value = FormatLargeNumber(xpLeftToLevel) .. "/" .. FormatLargeNumber(currentXpMax)
+	FrameLabel[1].value = colorText
+		.. FormatLargeNumber(currentXp)
+		.. "/"
+		.. FormatLargeNumber(currentXpMax)
+		.. " ("
+		.. round(100 * xpAsRatio)
+		.. "%)"
+	FrameLabel[2].value = FormatLargeNumber(xpLeftToLevel)
 	FrameLabel[3].value = FormatLargeNumber(3600 * xpPerSecond)
 	FrameLabel[4].value = TimeToLevelText(xpPerSecond, xpLeftToLevel)
 
