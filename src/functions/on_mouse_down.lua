@@ -1,15 +1,19 @@
 function CreateMenu(root)
 	root:CreateTitle("ExperienceLeft 0.3.0")
 
+	local submenuSession = root:CreateButton("Session")
 	if IsPaused then
-		root:CreateButton("Continue session", ContinueSession)
+		submenuSession
+			:CreateButton("Continue session", ContinueSession)
 			:SetTitleAndTextTooltip("", "Continue current session. I'm back.")
 	else
-		root:CreateButton("Pause session", PauseSession)
+		submenuSession
+			:CreateButton("Pause session", PauseSession)
 			:SetTitleAndTextTooltip("", "Stop recording session data. I'm AFK or otherwise involved")
 	end
-
-	root:CreateButton("Start new session", ResetSessionXP)
+	submenuSession:CreateDivider()
+	submenuSession
+		:CreateButton("Start new session", ResetSessionXP)
 		:SetTitleAndTextTooltip("", "Attention, this will delete all previously recorded data.")
 
 	--rootDescription:CreateDivider()
