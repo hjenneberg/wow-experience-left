@@ -20,6 +20,8 @@ src/functions/on_mouse_down.lua
 src/functions/reset_session_xp.lua
 src/functions/hide_frame.lua
 
+src/functions/slash_commands.lua
+
 src/functions/timeToLevelText.lua
 
 src/ExperienceLeft.lua
