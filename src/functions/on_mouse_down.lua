@@ -8,18 +8,8 @@ function CreateMenu(root)
 		root:CreateButton("Pause session", PauseSession)
 			:SetTitleAndTextTooltip("", "Stop recording session data. I'm AFK or otherwise involved")
 	end
-
 	root:CreateButton("Start new session", ResetSessionXP)
-		:SetTitleAndTextTooltip("", "Attention, this will delete all previously recorded data.")
-
-	--rootDescription:CreateDivider()
-	--local submenu = rootDescription:CreateButton("My Submenu")
-	--submenu:CreateButton("Enable", function()
-	--	return 1
-	--end, true)
-	--submenu:CreateButton("Disable", function()
-	--	return 1
-	--end, false)
+		:SetTitleAndTextTooltip("", "This will delete all previously recorded data.")
 
 	root:CreateDivider()
 
