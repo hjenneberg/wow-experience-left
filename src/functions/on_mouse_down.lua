@@ -1,5 +1,5 @@
 function CreateMenu(root)
-	root:CreateTitle("ExperienceLeft 0.3.0")
+	root:CreateTitle("ExperienceLeft 0.4.0")
 
 	if IsPaused then
 		root:CreateButton("Continue session", ContinueSession)

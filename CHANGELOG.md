@@ -1,3 +1,16 @@
+# Changelog
+
+## 0.4.0 (2024-12-16)
+
+### Changed
+
+-   The way values are displayed was updated.
+
+### Fixed
+
+-   Fixed a bug that caused a division by zero when starting a new session.
+-   The correct value is now used when calculating the experience from previous sessions.
+
 ## 0.3.0 (2024-12-13)
 
 ### Changed
