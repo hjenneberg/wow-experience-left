@@ -146,7 +146,7 @@ local function eventHandler(self, event, args, ...)
 		end
 		PreviousSessionTime = 0
 		if ExperienceLeftDB.sessionTime then
-			PreviousSessionTime = ExperienceLeftDB.sessionXp
+			PreviousSessionTime = ExperienceLeftDB.sessionTime
 		end
 
 		local relativePoint = "CENTER"
