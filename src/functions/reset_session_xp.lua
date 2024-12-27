@@ -1,14 +1,10 @@
 function ResetSessionXP()
 	IsPaused = false
-	PreviousSessionXp = 0
-	PreviousSessionTime = 0
-	SessionStartTime = time()
-	SessionTime = 0
-	SessionXp = 0
+
+	SessionValues = {}
 
 	if ExperienceLeftDB then
-		ExperienceLeftDB.sessionXp = 0
-		ExperienceLeftDB.sessionTime = 0
+		ExperienceLeftDB.SessionValues = {}
 	end
 
 	ShouldUpdateOnNextTick = true

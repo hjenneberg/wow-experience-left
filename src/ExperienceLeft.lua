@@ -6,11 +6,7 @@ IsPaused = false
 
 ShouldUpdateOnNextTick = false
 
-PreviousSessionXp = 0
-PreviousSessionTime = 0
-SessionStartTime = time()
-SessionTime = 0
-SessionXp = 0
+SessionValues = {}
 
 XpLeftFrame = CreateFrame("Frame", "ExperienceLeftMainFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 XpLeftFrame:SetSize(200, 70)
@@ -67,20 +63,16 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 
 	--Update calculation
 
-	if IsPaused then
-		SessionTime = 0
-	else
-		SessionTime = time() - SessionStartTime
-	end
-
-	local xpPerSecond = (SessionXp + PreviousSessionXp) / math.max((SessionTime + PreviousSessionTime), 1)
 	local xpLeftToLevel = currentXpMax - currentXp
 	local xpAsRatio = currentXp / currentXpMax
-	if ExperienceLeftDB then
-		ExperienceLeftDB.sessionXp = SessionXp + PreviousSessionXp
-		ExperienceLeftDB.sessionTime = SessionTime + PreviousSessionTime
+	local betterXpSum = 0
+	local betterXpPerSecond = 0
+	for _, v in ipairs(SessionValues) do
+		betterXpSum = betterXpSum + v.xp
 	end
-	timeSinceLastUpdate = 0
+	if #SessionValues > 0 then
+		betterXpPerSecond = betterXpSum / math.max(time() - SessionValues[1].time, 1)
+	end
 
 	--Update frame
 
@@ -96,15 +88,15 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 	end
 
 	FrameLabel[1].value = colorText
-		.. FormatLargeNumber(currentXp)
+		.. FormatLargeNumber(currentXp, 2)
 		.. "/"
-		.. FormatLargeNumber(currentXpMax)
+		.. FormatLargeNumber(currentXpMax, 1)
 		.. " ("
 		.. round(100 * xpAsRatio)
 		.. "%)"
-	FrameLabel[2].value = FormatLargeNumber(xpLeftToLevel)
-	FrameLabel[3].value = FormatLargeNumber(3600 * xpPerSecond)
-	FrameLabel[4].value = TimeToLevelText(xpPerSecond, xpLeftToLevel)
+	FrameLabel[2].value = FormatLargeNumber(xpLeftToLevel, 2)
+	FrameLabel[3].value = FormatLargeNumber(3600 * betterXpPerSecond, 2)
+	FrameLabel[4].value = TimeToLevelText(betterXpPerSecond, xpLeftToLevel)
 
 	for i = 1, lableCount do
 		local key = FrameLabel[i]["key"]
@@ -113,6 +105,8 @@ XpLeftFrame:SetScript("OnUpdate", function(self, elapsed)
 		XpLeftFrame[key .. "title"]:SetText(colorText .. value["title"] .. ":" .. ColorEnd)
 		XpLeftFrame[key .. "value"]:SetText(colorText .. value["value"] .. ColorEnd)
 	end
+
+	timeSinceLastUpdate = 0
 end)
 
 XpLeftFrame:RegisterEvent("ADDON_LOADED")
@@ -139,14 +133,14 @@ local function eventHandler(self, event, args, ...)
 		if not ExperienceLeftDB then
 			ExperienceLeftDB = {}
 		end
-
-		PreviousSessionXp = 0
-		if ExperienceLeftDB.sessionXp then
-			PreviousSessionXp = ExperienceLeftDB.sessionXp
-		end
-		PreviousSessionTime = 0
-		if ExperienceLeftDB.sessionTime then
-			PreviousSessionTime = ExperienceLeftDB.sessionTime
+		if ExperienceLeftDB.SessionValues then
+			SessionValues = ExperienceLeftDB.SessionValues
+			if #SessionValues > 0 then
+				local diff = time() - SessionValues[#SessionValues].time
+				for i, v in ipairs(SessionValues) do
+					SessionValues[i] = { time = v.time + diff, xp = v.xp }
+				end
+			end
 		end
 
 		local relativePoint = "CENTER"
@@ -164,17 +158,28 @@ local function eventHandler(self, event, args, ...)
 		XpLeftFrame:SetPoint("CENTER", UIParent, relativePoint, xOffset, yOffset)
 	end
 	if event == "PLAYER_XP_UPDATE" then
+		local xpGained = 0
 		if UnitLevel("player") == currentLevel then
 			if not IsPaused then
-				SessionXp = SessionXp + (UnitXP("player") - currentXp)
+				xpGained = (UnitXP("player") - currentXp)
 			end
 		else
 			if not IsPaused then
-				SessionXp = SessionXp + (currentXpMax - currentXp) + UnitXP("player")
+				xpGained = (currentXpMax - currentXp) + UnitXP("player")
 			end
 			currentLevel = UnitLevel("player")
 			currentXpMax = UnitXPMax("player")
 		end
+
+		local numberOfValues = 100
+		table.insert(SessionValues, { time = time(), xp = xpGained })
+		if #SessionValues > numberOfValues then
+			SessionValues = { unpack(SessionValues, #SessionValues - (numberOfValues - 1), #SessionValues) }
+		end
+		if ExperienceLeftDB then
+			ExperienceLeftDB.SessionValues = SessionValues
+		end
+
 		currentXp = UnitXP("player")
 	end
 end
