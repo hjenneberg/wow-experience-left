@@ -1,7 +1,10 @@
-function FormatLargeNumber(number)
+function FormatLargeNumber(number, numDecimalPlaces)
+	if numDecimalPlaces == nil then
+		numDecimalPlaces = 0
+	end
 	if number > 1000 then
-		return round(number / 1000, 1) .. "k"
+		return string.format("%." .. numDecimalPlaces .. "fk", round(number / 1000, numDecimalPlaces))
 	else
-		return round(number)
+		return string.format("%." .. numDecimalPlaces .. "f", round(number, numDecimalPlaces))
 	end
 end
