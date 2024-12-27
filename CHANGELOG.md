@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 (2024-12-27)
+
+### Changed
+
+-   The way experience is calculated has been changed.
+-   The pause function has been temporarily deactivated.
+
 ## 0.4.0 (2024-12-16)
 
 ### Changed
