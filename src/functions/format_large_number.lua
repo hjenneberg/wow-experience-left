@@ -3,8 +3,8 @@ function FormatLargeNumber(number, numDecimalPlaces)
 		numDecimalPlaces = 0
 	end
 	if number > 1000 then
-		return string.format("%." .. numDecimalPlaces .. "fk", round(number / 1000, numDecimalPlaces))
+		return string.format("%." .. numDecimalPlaces .. "fk", number / 1000)
 	else
-		return string.format("%." .. numDecimalPlaces .. "f", round(number, numDecimalPlaces))
+		return round(number)
 	end
 end
