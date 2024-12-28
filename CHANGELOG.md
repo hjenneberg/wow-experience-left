@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 (2024-12-28)
+
+### Fixed
+
+-   Fixed an error when rounding experience values.
+
 ## 0.5.0 (2024-12-27)
 
 ### Changed
