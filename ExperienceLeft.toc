@@ -2,7 +2,7 @@
 ## Title: Experience|cFFFFFFFFLeft|r
 ## Notes: Shows an estimate of how much time is needed to reach the next level
 ## Author: HJenneberg
-## Version: 0.5.0
+## Version: 0.5.1
 ## RequiredDeps:
 ## X-Curse-Project-ID: 1155015
 ## SavedVariables:
