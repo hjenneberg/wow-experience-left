@@ -1,4 +1,8 @@
 function OnHide()
+	if UnitIsAFK("player") then
+		return
+	end
+
 	PlaySound(808)
 
 	print(
