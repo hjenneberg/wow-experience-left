@@ -21,7 +21,7 @@ function OnMouseDown(self, button)
 	end
 	---@diagnostic disable-next-line: param-type-mismatch
 	MenuUtil.CreateContextMenu(XpLeftFrame, function(ownerRegion, root)
-		root:CreateTitle("ExperienceLeft 0.5.1")
+		root:CreateTitle("ExperienceLeft 0.5.2")
 
 		-- if IsPaused then
 		-- 	root:CreateButton("Continue session", ContinueSession)
