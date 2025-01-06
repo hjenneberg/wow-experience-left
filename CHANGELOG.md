@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2 (2025-01-06)
+
+### Fixed
+
+-   Fixed a bug that displays the on-hide message when the player went AFK.
+
 ## 0.5.1 (2024-12-28)
 
 ### Fixed
