@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added the display of completed and potential quest XP
+
+### Fixed
+
+- Fixed a bug when calculating max player level
+
 ## 0.5.2 (2025-01-06)
 
 ### Fixed

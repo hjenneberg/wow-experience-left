@@ -1,4 +1,4 @@
-## Interface: 11505
+## Interface: 16001
 ## Title: Experience|cFFFFFFFFLeft|r
 ## Notes: Shows an estimate of how much time is needed to reach the next level
 ## Author: HJenneberg
@@ -8,20 +8,16 @@
 ## SavedVariables:
 ## SavedVariablesPerCharacter: ExperienceLeftDB
 
-src/functions/round.lua
-src/functions/format_large_number.lua
-
-src/functions/on_drag_start.lua
-src/functions/on_drag_stop.lua
-src/functions/on_hide.lua
-src/functions/on_show.lua
-src/functions/on_mouse_down.lua
-
-src/functions/reset_session_xp.lua
-src/functions/hide_frame.lua
-
-src/functions/slash_commands.lua
-
-src/functions/timeToLevelText.lua
-
 src/ExperienceLeft.lua
+
+src/Util/Format.lua
+
+src/Data/XPTracker.lua
+src/Data/Quests.lua
+
+src/Calculation/XPStats.lua
+
+src/UI/MainFrame.lua
+
+src/Core/Events.lua
+src/Core/Commands.lua
