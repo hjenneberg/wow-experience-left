@@ -5,6 +5,7 @@
 ### Added
 
 - Added the display of completed and potential quest XP
+- Added a progress bar 
 
 ### Fixed
 

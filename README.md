@@ -20,10 +20,13 @@ After a fresh start on a fresh Classic Hardcore server I decided to get into add
 
 The addon offers a lot of the features you know from other addons of this type:
 
--   Displays current XP in relation to current maximum XP and XP left to reach next level
+-   Displays current XP in relation to current maximum XP
+-   Displays XP left to reach next level
+-   Displays the XP that can be earned by turning in all completed quests
+-   Displays the XP that can be earned by turning in all quests in your questlog
 -   Calculates XP per hour rates and estimates time left to reach next level
--   Experience rate is saved and used for calculation in subsequent sessions
 -   Level progress is displayed color coded on a scale from red to green
+-   Experience rate is saved and used for calculation in subsequent sessions
 
 The addon frame will be hidden upon reaching max level, but the addon will still be active. Consider disabling it on characters that have reached max level.
 
