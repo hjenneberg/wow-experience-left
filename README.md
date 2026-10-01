@@ -8,7 +8,7 @@ A World of Warcraft addon that shows an estimate of how much time is needed to r
 
 · [Changelog](./CHANGELOG.md) ·
 
-[![Version 0.5.2][github-release-shield]][github-release-link]
+[![Version 0.6.0][github-release-shield]][github-release-link]
 
 </div>
 
@@ -60,6 +60,6 @@ MIT
 <!-- Links -->
 
 [curseforge-release-link]: https://www.curseforge.com/wow/addons/experience-left
-[github-release-shield]: https://img.shields.io/badge/version-0.5.2-blue?color=369eff&labelColor=black&logo=github
-[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.5.2
+[github-release-shield]: https://img.shields.io/badge/version-0.6.0-blue?color=369eff&labelColor=black&logo=github
+[github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.6.0
 [image-screenshot]: ./docs/images/screenshot.png
