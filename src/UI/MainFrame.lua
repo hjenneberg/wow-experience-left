@@ -32,7 +32,7 @@ local function OnMouseDown(self, button)
 	end
 
 	MenuUtil.CreateContextMenu(self, function(ownerRegion, root)
-		root:CreateTitle("ExperienceLeft 0.5.2")
+		root:CreateTitle("ExperienceLeft 0.6.0")
 
 		root:CreateButton("Start new session", function()
 			addon.XPTracker:ResetSession()
@@ -117,6 +117,36 @@ local function Update()
 			.. " XP/h · "
 			.. addon.XPStats:GetTimeToLevelText(xpPerSecond, levelExperience.xpLeft)
 	)
+end
+
+function MainFrame:ShowTooltip()
+	if IsShiftKeyDown() then
+		return
+	end
+
+	local levelExperience = addon.XPStats:GetLevelExperience()
+	local potentialQuestXP, completedQuestXP = addon.Quests:GetExperience()
+	local xpPerSecond = addon.XPStats:GetXPPerSecond(addon.XPTracker:GetSessionValues())
+
+	GameTooltip:SetOwner(self.frame, "ANCHOR_BOTTOM")
+	GameTooltip:AddLine("ExperienceLeft", 1, 1, 1)
+	GameTooltip:AddLine(" ")
+
+	GameTooltip:AddDoubleLine("XP on current level", addon.FormatLargeNumber(levelExperience.currentXP, 2))
+	GameTooltip:AddDoubleLine("XP required for level up", addon.FormatLargeNumber(levelExperience.xpLeft, 2))
+	GameTooltip:AddLine(" ")
+
+	GameTooltip:AddDoubleLine("Completed quest XP", addon.FormatLargeNumber(completedQuestXP, 2))
+	GameTooltip:AddDoubleLine("Potential quest XP", addon.FormatLargeNumber(potentialQuestXP, 2))
+	GameTooltip:AddLine(" ")
+
+	GameTooltip:AddDoubleLine("XP per hour", addon.FormatLargeNumber(3600 * xpPerSecond, 2))
+	GameTooltip:AddDoubleLine(
+		"Time left for level up",
+		addon.XPStats:GetTimeToLevelText(xpPerSecond, levelExperience.xpLeft)
+	)
+
+	GameTooltip:Show()
 end
 
 function MainFrame:Create()
@@ -241,6 +271,14 @@ function MainFrame:Create()
 	frame:SetScript("OnHide", OnHide)
 	frame:SetScript("OnDragStart", OnDragStart)
 	frame:SetScript("OnDragStop", OnDragStop)
+
+	frame:SetScript("OnEnter", function()
+		self:ShowTooltip()
+	end)
+
+	frame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	self.frame = frame
 end
