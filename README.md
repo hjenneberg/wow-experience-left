@@ -62,4 +62,4 @@ MIT
 [curseforge-release-link]: https://www.curseforge.com/wow/addons/experience-left
 [github-release-shield]: https://img.shields.io/badge/version-0.6.0-blue?color=369eff&labelColor=black&logo=github
 [github-release-link]: https://github.com/hjenneberg/wow-experience-left/releases/tag/0.6.0
-[image-screenshot]: ./docs/images/screenshot.png
+[image-screenshot]: ./docs/images/screenshot.jpg
