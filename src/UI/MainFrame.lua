@@ -32,7 +32,7 @@ local function OnMouseDown(self, button)
 	end
 
 	MenuUtil.CreateContextMenu(self, function(ownerRegion, root)
-		root:CreateTitle("ExperienceLeft 0.6.0")
+		root:CreateTitle("ExperienceLeft 0.7.0")
 
 		root:CreateButton("Start new session", function()
 			addon.XPTracker:ResetSession()
