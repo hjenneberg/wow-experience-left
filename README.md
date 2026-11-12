@@ -67,6 +67,10 @@ You can pause and resume via the context menu or `/xpleft pause`.
 By default, a paused session resumes automatically as soon as you gain XP. You can turn this off via the context menu
 option "Auto-resume on XP gain". With it turned off, XP gained while paused is not counted towards your XP rate.
 
+The session is also paused automatically when you start fishing. This automatic pause always ends with your next XP
+gain, regardless of the auto-resume option, and never overrides a pause you started yourself. You can turn it off via
+the context menu option "Auto-pause while fishing".
+
 ## License
 
 MIT

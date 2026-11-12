@@ -50,7 +50,13 @@ local function OnMouseDown(self, button)
 			return addon.XPTracker:IsAutoResumeEnabled()
 		end, function()
 			addon.XPTracker:SetAutoResumeEnabled(not addon.XPTracker:IsAutoResumeEnabled())
-		end):SetTitleAndTextTooltip("", "Automatically resume a paused session when you gain XP.")
+		end):SetTitleAndTextTooltip("", "Automatically resume a manually paused session when you gain XP.")
+
+		root:CreateCheckbox("Auto-pause while fishing", function()
+			return addon.XPTracker:IsAutoPauseFishingEnabled()
+		end, function()
+			addon.XPTracker:SetAutoPauseFishingEnabled(not addon.XPTracker:IsAutoPauseFishingEnabled())
+		end):SetTitleAndTextTooltip("", "Pause the session when you start fishing. It resumes on your next XP gain.")
 
 		root:CreateDivider()
 
@@ -151,10 +157,12 @@ function MainFrame:ShowTooltip()
 	GameTooltip:AddLine("ExperienceLeft", 1, 1, 1)
 
 	if addon.XPTracker:IsPaused() then
-		local autoResumeText = addon.XPTracker:IsAutoResumeEnabled() and "resumes on next XP gain"
+		local resumeText = addon.XPTracker:ShouldResumeOnXPGain() and "resumes on next XP gain"
 			or "XP is not counted"
+		local reason = addon.XPTracker:GetPauseReason()
+		local reasonText = (reason and reason ~= "manual") and (reason .. ", ") or ""
 
-		GameTooltip:AddLine("Session paused (" .. autoResumeText .. ")", 0.7, 0.7, 0.7)
+		GameTooltip:AddLine("Session paused (" .. reasonText .. resumeText .. ")", 0.7, 0.7, 0.7)
 	end
 
 	GameTooltip:AddLine(" ")

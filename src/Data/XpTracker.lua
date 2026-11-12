@@ -14,9 +14,14 @@ function XPTracker:Initialize(savedVariables)
 
 	self.sessionValues = savedVariables.SessionValues or {}
 	self.pausedAt = savedVariables.PausedAt
+	self.pauseReason = self.pausedAt and (savedVariables.PauseReason or "manual") or nil
 
 	if savedVariables.AutoResume == nil then
 		savedVariables.AutoResume = true
+	end
+
+	if savedVariables.AutoPauseFishing == nil then
+		savedVariables.AutoPauseFishing = true
 	end
 
 	self:RestoreSessionValues()
@@ -57,16 +62,27 @@ function XPTracker:SetPausedAt(pausedAt)
 	self.db.PausedAt = pausedAt
 end
 
+function XPTracker:SetPauseReason(reason)
+	self.pauseReason = reason
+	self.db.PauseReason = reason
+end
+
 function XPTracker:IsPaused()
 	return self.pausedAt ~= nil
 end
 
-function XPTracker:Pause()
+-- "manual" for pauses started by the player, otherwise the trigger of an automatic pause (e.g. "fishing").
+function XPTracker:GetPauseReason()
+	return self.pauseReason
+end
+
+function XPTracker:Pause(reason)
 	if self:IsPaused() then
 		return
 	end
 
 	self:SetPausedAt(time())
+	self:SetPauseReason(reason or "manual")
 end
 
 function XPTracker:Resume()
@@ -76,6 +92,35 @@ function XPTracker:Resume()
 
 	self:ShiftSessionValues(time() - self.pausedAt)
 	self:SetPausedAt(nil)
+	self:SetPauseReason(nil)
+end
+
+-- Automatic pauses always end on XP gain, manual pauses only with auto-resume enabled.
+function XPTracker:ShouldResumeOnXPGain()
+	if not self:IsPaused() then
+		return false
+	end
+
+	return self.pauseReason ~= "manual" or self:IsAutoResumeEnabled()
+end
+
+function XPTracker:IsAutoPauseFishingEnabled()
+	return self.db.AutoPauseFishing ~= false
+end
+
+function XPTracker:SetAutoPauseFishingEnabled(enabled)
+	self.db.AutoPauseFishing = enabled and true or false
+end
+
+function XPTracker:OnFishingStarted()
+	-- Never override a running pause, especially not a manual one.
+	if not self:IsAutoPauseFishingEnabled() or self:IsPaused() then
+		return
+	end
+
+	self:Pause("fishing")
+
+	print(addon.ColorPrimary .. "Experience left|r: Session paused (fishing).")
 end
 
 function XPTracker:TogglePause()
@@ -136,7 +181,7 @@ function XPTracker:Update()
 		end
 	end
 
-	if xpGained > 0 and self:IsPaused() and self:IsAutoResumeEnabled() then
+	if xpGained > 0 and self:ShouldResumeOnXPGain() then
 		self:Resume()
 
 		print(addon.ColorPrimary .. "Experience left|r: Session resumed (XP gained).")
@@ -172,6 +217,7 @@ function XPTracker:ResetSession()
 
 	self.db.SessionValues = self.sessionValues
 	self:SetPausedAt(nil)
+	self:SetPauseReason(nil)
 end
 
 function XPTracker:GetSessionValues()
