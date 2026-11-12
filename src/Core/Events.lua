@@ -48,3 +48,38 @@ end)
 RegisterRuntimeEvent("UNIT_DIED", function(unitGUID)
 	addon.XPTracker:OnUnitDied(unitGUID)
 end)
+
+local FISHING_SPELL_NAME = "Fishing"
+
+local function GetChanneledSpellName(spellID)
+	if spellID then
+		if C_Spell and C_Spell.GetSpellName then
+			local name = C_Spell.GetSpellName(spellID)
+
+			if name then
+				return name
+			end
+		elseif GetSpellInfo then
+			local name = GetSpellInfo(spellID)
+
+			if name then
+				return name
+			end
+		end
+	end
+
+	return UnitChannelInfo("player")
+end
+
+RegisterRuntimeEvent("UNIT_SPELLCAST_CHANNEL_START", function(unit, _, spellID)
+	if unit ~= "player" or addon.XPStats:IsMaxLevel() then
+		return
+	end
+
+	if GetChanneledSpellName(spellID) ~= FISHING_SPELL_NAME then
+		return
+	end
+
+	addon.XPTracker:OnFishingStarted()
+	addon.MainFrame:RequestUpdate()
+end)

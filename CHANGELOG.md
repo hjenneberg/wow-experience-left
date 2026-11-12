@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added the last killed mob and the kills required for level up to the tooltip
 - Added an option to pause and resume the XP session (context menu and `/xpleft pause`)
 - Added an option to automatically resume a paused session on XP gain
+- Added an option to automatically pause the session while fishing
 
 ## [0.7.0] - 2026-10-02
 
