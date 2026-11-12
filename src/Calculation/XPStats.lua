@@ -91,3 +91,11 @@ function XPStats:GetTimeToLevelText(xpPerSecond, xpLeftToLevel)
 
 	return text
 end
+
+function XPStats:GetMobsNeededForLevel(xpLeft, mobXP)
+	if self:IsMaxLevel() or not mobXP or mobXP <= 0 then
+		return nil
+	end
+
+	return math.ceil(xpLeft / mobXP)
+end

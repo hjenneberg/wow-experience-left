@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added the last killed mob and the kills required for level up to the tooltip
+
 ## [0.7.0] - 2026-10-02
 
 ### Added
