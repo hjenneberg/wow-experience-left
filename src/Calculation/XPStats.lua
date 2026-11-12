@@ -11,7 +11,7 @@ function XPStats:GetQuestExperienceRatio(potentialXP, completedXP)
 	return completedXP / potentialXP
 end
 
-function XPStats:GetXPPerSecond(sessionValues)
+function XPStats:GetXPPerSecond(sessionValues, currentTime)
 	local xpSum = 0
 
 	for _, value in ipairs(sessionValues) do
@@ -22,7 +22,7 @@ function XPStats:GetXPPerSecond(sessionValues)
 		return 0
 	end
 
-	local duration = math.max(time() - sessionValues[1].time, 1)
+	local duration = math.max((currentTime or time()) - sessionValues[1].time, 1)
 
 	return xpSum / duration
 end
