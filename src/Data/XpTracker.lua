@@ -13,22 +13,90 @@ function XPTracker:Initialize(savedVariables)
 	self.currentXPMax = UnitXPMax("player")
 
 	self.sessionValues = savedVariables.SessionValues or {}
+	self.pausedAt = savedVariables.PausedAt
+
+	if savedVariables.AutoResume == nil then
+		savedVariables.AutoResume = true
+	end
+
 	self:RestoreSessionValues()
 end
 
-function XPTracker:RestoreSessionValues()
-	if #self.sessionValues == 0 then
-		return
-	end
-
-	local diff = time() - self.sessionValues[#self.sessionValues].time
-
+function XPTracker:ShiftSessionValues(diff)
 	for i, value in ipairs(self.sessionValues) do
 		self.sessionValues[i] = {
 			time = value.time + diff,
 			xp = value.xp,
 		}
 	end
+
+	self.db.SessionValues = self.sessionValues
+end
+
+function XPTracker:RestoreSessionValues()
+	if #self.sessionValues == 0 then
+		if self.pausedAt then
+			self:SetPausedAt(time())
+		end
+
+		return
+	end
+
+	local diff = time() - self.sessionValues[#self.sessionValues].time
+
+	self:ShiftSessionValues(diff)
+
+	-- Keep the distance between the last value and the pause start, so the frozen rate stays identical.
+	if self.pausedAt then
+		self:SetPausedAt(self.pausedAt + diff)
+	end
+end
+
+function XPTracker:SetPausedAt(pausedAt)
+	self.pausedAt = pausedAt
+	self.db.PausedAt = pausedAt
+end
+
+function XPTracker:IsPaused()
+	return self.pausedAt ~= nil
+end
+
+function XPTracker:Pause()
+	if self:IsPaused() then
+		return
+	end
+
+	self:SetPausedAt(time())
+end
+
+function XPTracker:Resume()
+	if not self:IsPaused() then
+		return
+	end
+
+	self:ShiftSessionValues(time() - self.pausedAt)
+	self:SetPausedAt(nil)
+end
+
+function XPTracker:TogglePause()
+	if self:IsPaused() then
+		self:Resume()
+	else
+		self:Pause()
+	end
+end
+
+-- Reference time for rate calculations: frozen at the pause start while paused.
+function XPTracker:GetCurrentTime()
+	return self.pausedAt or time()
+end
+
+function XPTracker:IsAutoResumeEnabled()
+	return self.db.AutoResume ~= false
+end
+
+function XPTracker:SetAutoResumeEnabled(enabled)
+	self.db.AutoResume = enabled and true or false
 end
 
 function XPTracker:Update()
@@ -68,6 +136,17 @@ function XPTracker:Update()
 		end
 	end
 
+	if xpGained > 0 and self:IsPaused() and self:IsAutoResumeEnabled() then
+		self:Resume()
+
+		print(addon.ColorPrimary .. "Experience left|r: Session resumed (XP gained).")
+	end
+
+	-- XP gained while paused is not counted towards the rate.
+	if self:IsPaused() then
+		return
+	end
+
 	self:AddSessionValue(xpGained)
 end
 
@@ -92,6 +171,7 @@ function XPTracker:ResetSession()
 	self.currentXPMax = UnitXPMax("player")
 
 	self.db.SessionValues = self.sessionValues
+	self:SetPausedAt(nil)
 end
 
 function XPTracker:GetSessionValues()

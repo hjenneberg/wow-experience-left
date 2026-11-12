@@ -20,11 +20,21 @@ local function ResetSession()
 	addon.MainFrame:RequestUpdate()
 end
 
+local function TogglePause()
+	addon.XPTracker:TogglePause()
+	addon.MainFrame:RequestUpdate()
+
+	local state = addon.XPTracker:IsPaused() and "paused" or "resumed"
+
+	print(addon.ColorPrimary .. "Experience left|r: Session " .. state .. ".")
+end
+
 local commands = {
 	show = ShowFrame,
 	hide = HideFrame,
 	center = CenterFrame,
 	reset = ResetSession,
+	pause = TogglePause,
 }
 
 local function PrintHelp()
@@ -34,6 +44,7 @@ local function PrintHelp()
 	print("|cFFFF9900/xpleft hide|r |cFFBBBBBB- Hide the addon main frame|r")
 	print("|cFFFF9900/xpleft center|r |cFFBBBBBB- Center the frame on the screen|r")
 	print("|cFFFF9900/xpleft reset|r |cFFBBBBBB- Reset saved xp rates from previous sessions|r")
+	print("|cFFFF9900/xpleft pause|r |cFFBBBBBB- Pause or resume the current session|r")
 end
 
 SLASH_EXPERIENCELEFT1 = "/xpleft"

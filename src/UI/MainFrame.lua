@@ -39,6 +39,19 @@ local function OnMouseDown(self, button)
 			addon.MainFrame:RequestUpdate()
 		end):SetTitleAndTextTooltip("", "This will delete all previously recorded data.")
 
+		local pauseLabel = addon.XPTracker:IsPaused() and "Resume session" or "Pause session"
+
+		root:CreateButton(pauseLabel, function()
+			addon.XPTracker:TogglePause()
+			addon.MainFrame:RequestUpdate()
+		end):SetTitleAndTextTooltip("", "While paused, the XP rate is frozen and elapsed time is not counted.")
+
+		root:CreateCheckbox("Auto-resume on XP gain", function()
+			return addon.XPTracker:IsAutoResumeEnabled()
+		end, function()
+			addon.XPTracker:SetAutoResumeEnabled(not addon.XPTracker:IsAutoResumeEnabled())
+		end):SetTitleAndTextTooltip("", "Automatically resume a paused session when you gain XP.")
+
 		root:CreateDivider()
 
 		root:CreateButton("Hide frame", function()
@@ -90,7 +103,8 @@ local function Update()
 	local levelExperience = addon.XPStats:GetLevelExperience()
 	local potentialQuestXP, completedQuestXP = addon.Quests:GetExperience()
 	local questXpRatio = addon.XPStats:GetQuestExperienceRatio(potentialQuestXP, completedQuestXP)
-	local xpPerSecond = addon.XPStats:GetXPPerSecond(addon.XPTracker:GetSessionValues())
+	local xpPerSecond =
+		addon.XPStats:GetXPPerSecond(addon.XPTracker:GetSessionValues(), addon.XPTracker:GetCurrentTime())
 	local r, g, b = GetColor(levelExperience.ratio)
 
 	frame.progressContainer:SetWidth(frame:GetWidth() * levelExperience.ratio)
@@ -112,11 +126,15 @@ local function Update()
 			.. addon.Round(100 * questXpRatio)
 			.. "%)"
 	)
-	frame.sessionText:SetText(
-		addon.FormatLargeNumber(3600 * xpPerSecond, 2)
-			.. " XP/h · "
-			.. addon.XPStats:GetTimeToLevelText(xpPerSecond, levelExperience.xpLeft)
-	)
+	local sessionText = addon.FormatLargeNumber(3600 * xpPerSecond, 2)
+		.. " XP/h · "
+		.. addon.XPStats:GetTimeToLevelText(xpPerSecond, levelExperience.xpLeft)
+
+	if addon.XPTracker:IsPaused() then
+		sessionText = "|cFF888888Paused · " .. sessionText .. "|r"
+	end
+
+	frame.sessionText:SetText(sessionText)
 end
 
 function MainFrame:ShowTooltip()
@@ -126,10 +144,19 @@ function MainFrame:ShowTooltip()
 
 	local levelExperience = addon.XPStats:GetLevelExperience()
 	local potentialQuestXP, completedQuestXP = addon.Quests:GetExperience()
-	local xpPerSecond = addon.XPStats:GetXPPerSecond(addon.XPTracker:GetSessionValues())
+	local xpPerSecond =
+		addon.XPStats:GetXPPerSecond(addon.XPTracker:GetSessionValues(), addon.XPTracker:GetCurrentTime())
 
 	GameTooltip:SetOwner(self.frame, "ANCHOR_BOTTOM")
 	GameTooltip:AddLine("ExperienceLeft", 1, 1, 1)
+
+	if addon.XPTracker:IsPaused() then
+		local autoResumeText = addon.XPTracker:IsAutoResumeEnabled() and "resumes on next XP gain"
+			or "XP is not counted"
+
+		GameTooltip:AddLine("Session paused (" .. autoResumeText .. ")", 0.7, 0.7, 0.7)
+	end
+
 	GameTooltip:AddLine(" ")
 
 	GameTooltip:AddDoubleLine("XP on current level", addon.FormatLargeNumber(levelExperience.currentXP, 2))

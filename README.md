@@ -57,6 +57,15 @@ Most of the addon options are available via context menu. Just right click the a
 - Use `/xpleft center` to move the frame back to its initial position if you have accidentally dragged it out of the
   screen
 - Use `/xpleft reset` to restart your XP session. All your previous XP rates will be deleted.
+- Use `/xpleft pause` to pause or resume your XP session
+
+### Pausing a session
+
+While a session is paused, your XP rate and the estimated time left are frozen, and the elapsed time is not counted.
+You can pause and resume via the context menu or `/xpleft pause`.
+
+By default, a paused session resumes automatically as soon as you gain XP. You can turn this off via the context menu
+option "Auto-resume on XP gain". With it turned off, XP gained while paused is not counted towards your XP rate.
 
 ## License
 
