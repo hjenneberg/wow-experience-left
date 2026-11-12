@@ -146,6 +146,25 @@ function MainFrame:ShowTooltip()
 		addon.XPStats:GetTimeToLevelText(xpPerSecond, levelExperience.xpLeft)
 	)
 
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddLine("Last mob killed", 1, 1, 1)
+
+	local lastMob = addon.XPTracker:GetLastMob()
+	if not lastMob then
+		GameTooltip:AddLine("No kill registered yet", 0.7, 0.7, 0.7)
+	else
+		GameTooltip:AddDoubleLine("Mob", lastMob.name or "Unknown")
+		GameTooltip:AddDoubleLine("XP per kill", addon.FormatLargeNumber(lastMob.xp or 0))
+
+		local mobsNeeded = addon.XPStats:GetMobsNeededForLevel(levelExperience.xpLeft, lastMob.xp)
+
+		if mobsNeeded then
+			GameTooltip:AddDoubleLine("Kills required for level up", tostring(mobsNeeded))
+		elseif addon.XPStats:IsMaxLevel() then
+			GameTooltip:AddLine("Max level reached", 0.7, 0.7, 0.7)
+		end
+	end
+
 	GameTooltip:Show()
 end
 
